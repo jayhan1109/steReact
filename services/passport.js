@@ -4,6 +4,11 @@ const mongoose = require("mongoose");
 const keys = require("../config/keys");
 const User = require("../models/User");
 
+passport.serializeUser((user, done) => {
+  // we can access with id not _id
+  done(null, user.id);
+});
+
 module.exports = passport.use(
   new GoogleStrategy(
     {
@@ -14,10 +19,11 @@ module.exports = passport.use(
     (accessToken, refreshToken, profile, done) => {
       User.findOne({ googleId: profile.id }).then(response => {
         if (response) {
-          // TODO: sign in page
-          console.log("exist!");
+          done(null, response);
         } else {
-          new User({ googleId: profile.id }).save();
+          new User({ googleId: profile.id })
+            .save()
+            .then(user => done(null, user));
         }
       });
     }
