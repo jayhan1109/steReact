@@ -12,9 +12,14 @@ module.exports = passport.use(
       callbackURL: "/auth/google/callback"
     },
     (accessToken, refreshToken, profile, done) => {
-      new User({
-        googleId: profile.id
-      }).save();
+      User.findOne({ googleId: profile.id }).then(response => {
+        if (response) {
+          // TODO: sign in page
+          console.log("exist!");
+        } else {
+          new User({ googleId: profile.id }).save();
+        }
+      });
     }
   )
 );
