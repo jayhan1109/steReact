@@ -1,7 +1,14 @@
 const express = require("express");
+const mongoose = require("mongoose");
 // just call with require is once!! executed
 require("./services/passport");
 const authRoutes = require("./routes/authRoutes");
+const keys = require("./config/keys");
+
+mongoose.connect(keys.mongoURI, {
+  useNewUrlParser: true,
+  useFindAndModify: false
+});
 
 const app = express();
 authRoutes(app);
